@@ -24,9 +24,12 @@ const adminbookingsRouter = require('./routes/admibookings.js');
 const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
+    'https://exquisite-adaptation-production-cb4f.up.railway.app'
   ],
+
   credentials: true,
+
   methods: [
     'GET',
     'POST',
@@ -35,6 +38,7 @@ const corsOptions = {
     'DELETE',
     'OPTIONS'
   ],
+
   allowedHeaders: [
     'Content-Type',
     'Authorization',
@@ -57,15 +61,26 @@ app.use(express.json());
 // =====================================================
 
 app.get('/', (req, res) => {
+
   res.status(200).json({
-    message: 'IIT Gandhinagar Guest House Booking API is running',
+
+    message:
+      'IIT Gandhinagar Guest House Booking API is running',
+
     endpoints: {
+
       users: '/users',
+
       rooms: '/rooms',
+
       bookings: '/bookings',
+
       adminBookings: '/admibookings'
+
     }
+
   });
+
 });
 
 
@@ -73,13 +88,25 @@ app.get('/', (req, res) => {
 // API ROUTES
 // =====================================================
 
-app.use('/users', usersRouter);
+app.use(
+  '/users',
+  usersRouter
+);
 
-app.use('/rooms', roomsRouter);
+app.use(
+  '/rooms',
+  roomsRouter
+);
 
-app.use('/bookings', bookingsRouter);
+app.use(
+  '/bookings',
+  bookingsRouter
+);
 
-app.use('/admibookings', adminbookingsRouter);
+app.use(
+  '/admibookings',
+  adminbookingsRouter
+);
 
 
 // =====================================================
@@ -87,10 +114,17 @@ app.use('/admibookings', adminbookingsRouter);
 // =====================================================
 
 app.use((req, res) => {
+
   res.status(404).json({
-    message: 'API route not found',
-    path: req.originalUrl
+
+    message:
+      'API route not found',
+
+    path:
+      req.originalUrl
+
   });
+
 });
 
 
@@ -98,15 +132,23 @@ app.use((req, res) => {
 // ERROR HANDLER
 // =====================================================
 
-app.use((err, req, res, next) => {
+app.use(
+  (err, req, res, next) => {
 
-  console.error('Server error:', err);
+    console.error(
+      'Server error:',
+      err
+    );
 
-  res.status(500).json({
-    message: 'Internal Server Error'
-  });
+    res.status(500).json({
 
-});
+      message:
+        'Internal Server Error'
+
+    });
+
+  }
+);
 
 
 // =====================================================
@@ -120,7 +162,9 @@ if (!process.env.MONGODB_URI) {
   );
 
   process.exit(1);
+
 }
+
 
 if (!process.env.SECRET_KEY) {
 
@@ -129,11 +173,15 @@ if (!process.env.SECRET_KEY) {
   );
 
   process.exit(1);
+
 }
 
 
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(
+    process.env.MONGODB_URI
+  )
+
   .then(() => {
 
     console.log(
@@ -141,6 +189,7 @@ mongoose
     );
 
   })
+
   .catch((error) => {
 
     console.error(
@@ -155,8 +204,18 @@ mongoose
 // START SERVER
 // =====================================================
 
-const port = process.env.PORT || 8082;
+const port =
+  process.env.PORT || 8082;
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
-});
+
+app.listen(
+  port,
+  '0.0.0.0',
+  () => {
+
+    console.log(
+      `Server running on port ${port}`
+    );
+
+  }
+);
