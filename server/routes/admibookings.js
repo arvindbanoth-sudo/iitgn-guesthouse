@@ -8,22 +8,66 @@ const bookingsmodel = require('../pages/bookingmodel');
 const adminmodel = require('../pages/adminmodel');
 const middleware = require('../middleware');
 
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 require('dotenv').config();
 
 
 // =====================================================
-// EMAIL CONFIGURATION
+// BREVO EMAIL HELPER
 // =====================================================
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+const sendBrevoEmail = async ({
+  to,
+  subject,
+  htmlContent,
+  textContent = ''
+}) => {
+
+  if (
+    !process.env.BREVO_API_KEY ||
+    !process.env.EMAIL_FROM
+  ) {
+    throw new Error(
+      'Brevo email configuration is missing'
+    );
   }
-});
+
+  const response = await axios.post(
+    'https://api.brevo.com/v3/smtp/email',
+
+    {
+      sender: {
+        name: 'IIT Gandhinagar Guest House',
+        email: process.env.EMAIL_FROM
+      },
+
+      to: [
+        {
+          email: to
+        }
+      ],
+
+      subject,
+
+      htmlContent,
+
+      ...(textContent
+        ? { textContent }
+        : {})
+    },
+
+    {
+      headers: {
+        accept: 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json'
+      }
+    }
+  );
+
+  return response.data;
+};
 
 
 // =====================================================
@@ -42,7 +86,8 @@ const parseDate = (value) => {
     /^\d{2}-\d{2}-\d{4}$/.test(value)
   ) {
 
-    const [day, month, year] = value.split('-');
+    const [day, month, year] =
+      value.split('-');
 
     const date = new Date(
       Number(year),
@@ -78,10 +123,12 @@ const datesOverlap = (
   startB,
   endB
 ) => {
+
   return (
     startA < endB &&
     endA > startB
   );
+
 };
 
 
@@ -93,6 +140,7 @@ const isAdmin = async (userid) => {
   }
 
   return await adminmodel.findById(userid);
+
 };
 
 
@@ -101,7 +149,11 @@ const isAdmin = async (userid) => {
 // =====================================================
 
 router.get('/', (req, res) => {
-  res.send('Admin bookings API is running');
+
+  res.send(
+    'Admin bookings API is running'
+  );
+
 });
 
 
@@ -109,104 +161,139 @@ router.get('/', (req, res) => {
 // GET ALL BOOKINGS
 // =====================================================
 
-router.get('/bookings', middleware, async (req, res) => {
+router.get(
+  '/bookings',
+  middleware,
+  async (req, res) => {
 
-  try {
+    try {
 
-    const admin = await isAdmin(req.userid);
+      const admin =
+        await isAdmin(req.userid);
 
-    if (!admin) {
-      return res.status(401).json({
-        message: 'Admin not found'
-      });
-    }
+      if (!admin) {
 
-
-    const studentbookings =
-      await bookingsmodel
-        .find({ usertype: 'student' })
-        .lean();
-
-
-    const facultybookings =
-      await bookingsmodel
-        .find({ usertype: 'faculty' })
-        .lean();
-
-
-    const bookings =
-      await bookingsmodel
-        .find({})
-        .lean();
-
-
-    // Convert room IDs to room numbers
-    const changeRoomsByNumber = async (booking) => {
-
-      const roomNumbers = [];
-
-      for (const roomId of booking.rooms || []) {
-
-        const room =
-          await roommodel
-            .findById(roomId)
-            .lean();
-
-        if (room) {
-          roomNumbers.push(
-            room.roomnumber
-          );
-        }
+        return res.status(401).json({
+          message: 'Admin not found'
+        });
 
       }
 
-      booking.rooms = roomNumbers;
-    };
+
+      const studentbookings =
+        await bookingsmodel
+          .find({
+            usertype: 'student'
+          })
+          .lean();
 
 
-    await Promise.all(
-      studentbookings.map(changeRoomsByNumber)
-    );
-
-    await Promise.all(
-      facultybookings.map(changeRoomsByNumber)
-    );
-
-    await Promise.all(
-      bookings.map(changeRoomsByNumber)
-    );
+      const facultybookings =
+        await bookingsmodel
+          .find({
+            usertype: 'faculty'
+          })
+          .lean();
 
 
-    return res.status(200).json({
+      const bookings =
+        await bookingsmodel
+          .find({})
+          .lean();
 
-      Studentbookings:
-        studentbookings,
 
-      Facultybookings:
-        facultybookings,
+      // Convert room IDs to room numbers
+      const changeRoomsByNumber =
+        async (booking) => {
 
-      Bookings:
-        bookings
+          const roomNumbers = [];
 
-    });
 
-  } catch (error) {
+          for (
+            const roomId
+            of booking.rooms || []
+          ) {
 
-    console.error(
-      'Error fetching admin bookings:',
-      error
-    );
+            const room =
+              await roommodel
+                .findById(roomId)
+                .lean();
 
-    return res.status(500).json({
-      message:
-        'Unable to fetch bookings',
-      error:
-        error.message
-    });
+
+            if (room) {
+
+              roomNumbers.push(
+                room.roomnumber
+              );
+
+            }
+
+          }
+
+
+          booking.rooms =
+            roomNumbers;
+
+        };
+
+
+      await Promise.all(
+        studentbookings.map(
+          changeRoomsByNumber
+        )
+      );
+
+
+      await Promise.all(
+        facultybookings.map(
+          changeRoomsByNumber
+        )
+      );
+
+
+      await Promise.all(
+        bookings.map(
+          changeRoomsByNumber
+        )
+      );
+
+
+      return res.status(200).json({
+
+        Studentbookings:
+          studentbookings,
+
+        Facultybookings:
+          facultybookings,
+
+        Bookings:
+          bookings
+
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        'Error fetching admin bookings:',
+        error
+      );
+
+
+      return res.status(500).json({
+
+        message:
+          'Unable to fetch bookings',
+
+        error:
+          error.message
+
+      });
+
+    }
 
   }
-
-});
+);
 
 
 // =====================================================
@@ -220,14 +307,20 @@ router.put(
 
     try {
 
-      const { id } = req.body;
+      const {
+        id
+      } = req.body;
 
 
       if (!id) {
+
         return res.status(400).json({
+
           message:
             'Booking ID is required'
+
         });
+
       }
 
 
@@ -236,14 +329,20 @@ router.put(
       // -------------------------------------------------
 
       const admin =
-        await isAdmin(req.userid);
+        await isAdmin(
+          req.userid
+        );
 
 
       if (!admin) {
+
         return res.status(401).json({
+
           message:
             'Admin not found'
+
         });
+
       }
 
 
@@ -256,10 +355,14 @@ router.put(
 
 
       if (!booking) {
+
         return res.status(404).json({
+
           message:
             'Booking not found'
+
         });
+
       }
 
 
@@ -269,8 +372,10 @@ router.put(
       ) {
 
         return res.status(400).json({
+
           message:
             'Booking is already approved'
+
         });
 
       }
@@ -282,8 +387,10 @@ router.put(
       ) {
 
         return res.status(400).json({
+
           message:
             'Rejected bookings cannot be approved'
+
         });
 
       }
@@ -298,6 +405,7 @@ router.put(
           booking.fromdate
         );
 
+
       const checkOut =
         parseDate(
           booking.enddate
@@ -311,8 +419,10 @@ router.put(
       ) {
 
         return res.status(400).json({
+
           message:
             'Invalid booking dates'
+
         });
 
       }
@@ -350,6 +460,7 @@ router.put(
             existing.fromdate
           );
 
+
         const existingEnd =
           parseDate(
             existing.enddate
@@ -368,8 +479,10 @@ router.put(
         ) {
 
           return res.status(409).json({
+
             message:
               'One or more selected rooms are already booked for these dates'
+
           });
 
         }
@@ -465,22 +578,132 @@ router.put(
 
       if (
         user?.email &&
-        process.env.EMAIL_USER &&
-        process.env.EMAIL_PASS
+        process.env.BREVO_API_KEY &&
+        process.env.EMAIL_FROM
       ) {
 
-        const mailOptions = {
+        try {
 
-          from:
-            process.env.EMAIL_USER,
+          const result =
+            await sendBrevoEmail({
 
-          to:
-            user.email,
+              to:
+                user.email,
 
-          subject:
-            `IIT Gandhinagar Guest House Booking Approved - ${booking._id}`,
+              subject:
+                `IIT Gandhinagar Guest House Booking Approved - ${booking._id}`,
 
-          text: `
+              htmlContent: `
+                <div
+                  style="
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #222;
+                  "
+                >
+
+                  <h2
+                    style="
+                      color: #1c58d9;
+                    "
+                  >
+                    IIT Gandhinagar Guest House
+                  </h2>
+
+                  <h3>
+                    Booking Approved
+                  </h3>
+
+                  <p>
+                    Congratulations!
+                  </p>
+
+                  <p>
+                    Your IIT Gandhinagar Guest House
+                    booking has been approved.
+                  </p>
+
+                  <hr />
+
+                  <p>
+                    <strong>Booking ID:</strong><br>
+                    ${booking._id}
+                  </p>
+
+                  <p>
+                    <strong>Booking Date:</strong><br>
+                    ${booking.bookedon}
+                  </p>
+
+                  <p>
+                    <strong>Name:</strong><br>
+                    ${booking.firstname}
+                    ${booking.lastname}
+                  </p>
+
+                  <p>
+                    <strong>Email:</strong><br>
+                    ${booking.email}
+                  </p>
+
+                  <p>
+                    <strong>Number of Adults:</strong><br>
+                    ${booking.adults}
+                  </p>
+
+                  <p>
+                    <strong>Purpose:</strong><br>
+                    ${booking.purpose || 'Not specified'}
+                  </p>
+
+                  <p>
+                    <strong>Check-in:</strong><br>
+                    ${booking.fromdate}
+                  </p>
+
+                  <p>
+                    <strong>Check-out:</strong><br>
+                    ${booking.enddate}
+                  </p>
+
+                  <p>
+                    <strong>Rooms Allocated:</strong><br>
+                    ${roomNumbers.join(', ')}
+                  </p>
+
+                  <p>
+                    <strong>Room Type:</strong><br>
+                    ${(booking.roomstype || []).join(', ')}
+                  </p>
+
+                  <p>
+                    <strong>Meal Plan:</strong><br>
+                    ${booking.meals || 'Not specified'}
+                  </p>
+
+                  <p>
+                    <strong>Special Request:</strong><br>
+                    ${booking.specialrequest || 'None'}
+                  </p>
+
+                  <hr />
+
+                  <p>
+                    We hope you have a pleasant
+                    stay at IIT Gandhinagar Guest House.
+                  </p>
+
+                  <p>
+                    Regards,<br>
+                    <strong>
+                      IIT Gandhinagar Guest House
+                    </strong>
+                  </p>
+
+                </div>
+              `,
+
+              textContent: `
 Congratulations!
 
 Your IIT Gandhinagar Guest House booking has been approved.
@@ -525,25 +748,23 @@ We hope you have a pleasant stay at IIT Gandhinagar Guest House.
 
 Regards,
 IIT Gandhinagar Guest House
-          `
-        };
+              `
 
+            });
 
-        try {
-
-          await transporter.sendMail(
-            mailOptions
-          );
 
           console.log(
             'Approval email sent to:',
-            user.email
+            user.email,
+            result?.messageId || ''
           );
+
 
         } catch (emailError) {
 
           console.error(
             'Approval email failed:',
+            emailError.response?.data ||
             emailError.message
           );
 
@@ -558,12 +779,16 @@ IIT Gandhinagar Guest House
           'Booking approved successfully',
 
         Bookingdetail: {
+
           ...booking.toObject(),
+
           rooms:
             roomNumbers
+
         }
 
       });
+
 
     } catch (error) {
 
@@ -571,6 +796,7 @@ IIT Gandhinagar Guest House
         'Approve booking error:',
         error
       );
+
 
       return res.status(500).json({
 
@@ -599,14 +825,20 @@ router.put(
 
     try {
 
-      const { id } = req.body;
+      const {
+        id
+      } = req.body;
 
 
       if (!id) {
+
         return res.status(400).json({
+
           message:
             'Booking ID is required'
+
         });
+
       }
 
 
@@ -617,10 +849,14 @@ router.put(
 
 
       if (!admin) {
+
         return res.status(401).json({
+
           message:
             'Admin not found'
+
         });
+
       }
 
 
@@ -629,10 +865,14 @@ router.put(
 
 
       if (!booking) {
+
         return res.status(404).json({
+
           message:
             'Booking not found'
+
         });
+
       }
 
 
@@ -642,8 +882,10 @@ router.put(
       ) {
 
         return res.status(400).json({
+
           message:
             'Booking is already rejected'
+
         });
 
       }
@@ -655,8 +897,10 @@ router.put(
       ) {
 
         return res.status(400).json({
+
           message:
             'Approved bookings cannot be rejected'
+
         });
 
       }
@@ -668,7 +912,10 @@ router.put(
       await booking.save();
 
 
+      // -------------------------------------------------
       // Find user
+      // -------------------------------------------------
+
       let user = null;
 
 
@@ -706,22 +953,96 @@ router.put(
 
       if (
         user?.email &&
-        process.env.EMAIL_USER &&
-        process.env.EMAIL_PASS
+        process.env.BREVO_API_KEY &&
+        process.env.EMAIL_FROM
       ) {
 
-        const mailOptions = {
+        try {
 
-          from:
-            process.env.EMAIL_USER,
+          const result =
+            await sendBrevoEmail({
 
-          to:
-            user.email,
+              to:
+                user.email,
 
-          subject:
-            `IIT Gandhinagar Guest House Booking Rejected - ${booking._id}`,
+              subject:
+                `IIT Gandhinagar Guest House Booking Rejected - ${booking._id}`,
 
-          text: `
+              htmlContent: `
+                <div
+                  style="
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #222;
+                  "
+                >
+
+                  <h2
+                    style="
+                      color: #1c58d9;
+                    "
+                  >
+                    IIT Gandhinagar Guest House
+                  </h2>
+
+                  <h3>
+                    Booking Rejected
+                  </h3>
+
+                  <p>
+                    Dear ${booking.firstname},
+                  </p>
+
+                  <p>
+                    We are sorry to inform you that
+                    your IIT Gandhinagar Guest House
+                    booking has been rejected.
+                  </p>
+
+                  <hr />
+
+                  <p>
+                    <strong>Booking ID:</strong><br>
+                    ${booking._id}
+                  </p>
+
+                  <p>
+                    <strong>Booking Date:</strong><br>
+                    ${booking.bookedon}
+                  </p>
+
+                  <p>
+                    <strong>Check-in:</strong><br>
+                    ${booking.fromdate}
+                  </p>
+
+                  <p>
+                    <strong>Check-out:</strong><br>
+                    ${booking.enddate}
+                  </p>
+
+                  <p>
+                    <strong>Purpose:</strong><br>
+                    ${booking.purpose || 'Not specified'}
+                  </p>
+
+                  <p>
+                    Please contact the IIT Gandhinagar
+                    Guest House administration for
+                    further information.
+                  </p>
+
+                  <p>
+                    Regards,<br>
+                    <strong>
+                      IIT Gandhinagar Guest House
+                    </strong>
+                  </p>
+
+                </div>
+              `,
+
+              textContent: `
 Dear ${booking.firstname},
 
 We are sorry to inform you that your IIT Gandhinagar Guest House booking has been rejected.
@@ -745,25 +1066,23 @@ Please contact the IIT Gandhinagar Guest House administration for further inform
 
 Regards,
 IIT Gandhinagar Guest House
-          `
-        };
+              `
 
+            });
 
-        try {
-
-          await transporter.sendMail(
-            mailOptions
-          );
 
           console.log(
             'Rejection email sent to:',
-            user.email
+            user.email,
+            result?.messageId || ''
           );
+
 
         } catch (emailError) {
 
           console.error(
             'Rejection email failed:',
+            emailError.response?.data ||
             emailError.message
           );
 
@@ -782,12 +1101,14 @@ IIT Gandhinagar Guest House
 
       });
 
+
     } catch (error) {
 
       console.error(
         'Reject booking error:',
         error
       );
+
 
       return res.status(500).json({
 
@@ -823,10 +1144,14 @@ router.post(
 
 
       if (!admin) {
+
         return res.status(401).json({
+
           message:
             'Admin not found'
+
         });
+
       }
 
 
@@ -866,8 +1191,10 @@ router.post(
       ) {
 
         return res.status(400).json({
+
           message:
             'Please provide all required booking details'
+
         });
 
       }
@@ -880,6 +1207,7 @@ router.post(
       const checkIn =
         parseDate(fromdate);
 
+
       const checkOut =
         parseDate(enddate);
 
@@ -890,8 +1218,10 @@ router.post(
       ) {
 
         return res.status(400).json({
+
           message:
             'Invalid booking dates'
+
         });
 
       }
@@ -902,8 +1232,10 @@ router.post(
       ) {
 
         return res.status(400).json({
+
           message:
             'Check-out date must be after check-in date'
+
         });
 
       }
@@ -915,9 +1247,11 @@ router.post(
 
       const selectedRooms =
         await roommodel.find({
+
           _id: {
             $in: rooms
           }
+
         });
 
 
@@ -927,8 +1261,10 @@ router.post(
       ) {
 
         return res.status(400).json({
+
           message:
             'One or more selected rooms do not exist'
+
         });
 
       }
@@ -964,6 +1300,7 @@ router.post(
           parseDate(
             existing.fromdate
           );
+
 
         const existingEnd =
           parseDate(
@@ -1008,10 +1345,14 @@ router.post(
             lname.trim(),
 
           email:
-            email.toLowerCase().trim(),
+            email
+              .toLowerCase()
+              .trim(),
 
           phonenumber:
-            String(phonenumber).trim(),
+            String(
+              phonenumber
+            ).trim(),
 
           fromdate,
 
@@ -1080,6 +1421,7 @@ router.post(
           result
 
       });
+
 
     } catch (error) {
 
