@@ -1,0 +1,197 @@
+.homecomp2{
+    /* background-color:#223241f2; */
+    /* background-color: #e5e5e5; */
+    padding-top:75px;
+    padding-bottom: 25px;
+}
+.about{
+    display: flex;
+    width: 80%;
+    margin: 0px auto 65px;
+}
+.features{
+    width: 80%;
+    margin: 100px auto 0px;
+}
+.facilities{
+    display: grid;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    grid-template-columns: repeat(3,1fr);
+    margin-top: 37px;
+    row-gap: 50px;
+}
+.facilities div{
+    padding: 10px 30px;
+}
+.facilities h1{
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.03em;
+    color: rgb(50, 50, 50);
+    font-size: 25px;
+}
+.facilities p{
+    margin: 12px 0px 0px;
+    padding: 0px;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(77, 77, 77);
+    line-height: 160%;
+    text-align: center;
+}
+.facilities ul{
+    margin-top: 25px;
+    display: flex;
+    /* flex-direction: column; */
+    flex-wrap: wrap;
+    gap:20px;
+    list-style-type: none;
+    padding-left: 0;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+.facilities li{
+    /* line-height: 1.2em; */
+    font-size: 16px;
+    font-weight: 600;
+     /* justify-content: center; */
+     background-color: rgb(253, 238, 238);
+     color: rgb(113, 42, 42);
+     padding: 8px 11px;
+     border-radius: 999px;
+}
+.about_desc{
+    background-color: #fff;
+    /* padding:30px; */
+    /* width: 600px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* height: auto; */
+}
+.about_img{
+    /* flex: 1; */
+    width: 600px;
+}
+.about_img img{
+    width: 100%;
+    height: 100%;
+}
+.abouttop{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.03em;
+    color: rgb(231, 85, 85);
+}
+.aboutushead{
+  color:rgb(50, 50, 50);
+  font-size: 42px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  /* text-transform: uppercase; */
+  line-height: 1;
+  /* position: relative; */
+}
+.textabout{
+    color: rgb(103, 103, 103);
+    line-height: 1.5em;
+    margin-bottom: 0;
+    margin-top: 25px;
+    font-size: 17px;
+    font-weight: 400;
+  letter-spacing: 0.02em;
+  white-space: pre-line;
+  line-height: 1.7;
+  /* font-family: 'Hind'; */
+}
+@media screen and (max-width:1286px){
+
+    .features{
+        width: 90%;
+    }
+    }
+    @media screen and (max-width:1200px) and (min-width:986px){
+        .facilities{
+            grid-template-columns: repeat(2,1fr);
+            /* row-gap: 30px; */
+        }
+        .features{
+            width: 90%;
+        }
+        }
+    @media screen and (max-width:986px){
+        .about{
+            width: 86%;
+            flex-direction: column;
+        }
+        .features{
+            width: 86%;
+        }
+        .about_img{
+            width:100%;
+            /* height: 500px; */
+        }
+        .about_desc{
+            width: 100%;
+            padding: 20px;
+        }
+        .facilities{
+            grid-template-columns: repeat(1,1fr);
+            row-gap: 30px;
+        }
+        .homecomp2{
+            padding-top: 60px;
+        }
+        }
+        @media screen and (max-width:586px){
+            .about{
+                width: 100%;
+                flex-direction: column;
+            }
+            .features{
+                width: 90%;
+                justify-content: start;
+                margin: 25px auto 10px;
+            }
+            .features h2{
+                margin-bottom: 0px !important;
+            }
+            .facilities{
+                margin-top:30px;
+            }
+            .facilities ul{
+                margin-bottom: 20px;
+            }
+            .aboutushead{
+                margin-top: 0;
+                font-size: 27px;
+                margin-bottom: 0;
+            }
+            .textabout{
+                margin-top: 20px;
+            }
+            .about{
+                margin: 0px auto 25px;
+            }
+            .about_desc{
+                padding: 20px 13px;
+            }
+            .homecomp2{
+                padding-top: 20px;
+                padding-bottom: 0px;
+            }
+            .facilities ul{
+                padding-left: 15px;
+            }
+            .facilities{
+                grid-template-columns: repeat(1,1fr);
+                row-gap:10px;
+            }
+            }
+    

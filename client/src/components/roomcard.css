@@ -1,0 +1,89 @@
+.main_card_container{
+    border:1px solid #ccc;
+    border-radius: 5px;
+    padding:14px;
+    box-sizing: border-box;
+}
+.card_container_img_desc{
+    display: flex;
+    flex-direction: row;
+    gap:30px
+}
+.card_container_desc{
+    display: flex;
+    flex-direction: column;
+    padding:17px  0 0 10px
+}
+.card_container_img{
+    width:58%;
+    max-width: 100%;
+    min-height: 230px;
+    
+}
+.roomname{
+    font-size: 17px;
+    font-weight: bold;
+    color: #1e1e1e;
+}
+.roomdesc{
+    font-size: 17px;
+    color: #1e1e1e;
+    line-height: 1.8;
+}
+.room_dates{
+    padding:15px 10px
+}
+.card_select{
+    padding:8px 10px
+}
+.card_select button{
+    background-color:#025464;
+    color: #fff;
+    /* border-radius: 6px; */
+    font-size: 16px;
+    outline: none;
+    border: none;
+    width: auto;
+    height: 45px;
+    padding: 5px 12px;
+    cursor: pointer;
+}
+.card_rooms{
+    padding: 8px 10px;
+    color: red;
+}
+.card_rooms{
+        animation: blink 1.3s infinite;
+}
+@keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+@media only screen and (max-width:648px){
+    .card_container_img_desc{
+        display: flex;
+        flex-direction:column-reverse;
+        gap:30px
+    }
+    .card_container_img{
+        width:100%;
+        min-height: 230px;
+        
+    }
+    .room_dates{
+        padding:0px 10px 5px 10px
+    }
+    .card_select{
+        padding:15px 10px
+    }
+    .card_select button{
+        height: 40px;
+    }
+}

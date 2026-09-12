@@ -1,0 +1,94 @@
+.footert{
+    /* background-color: #e5e5e5; */
+    background:url('https://mftgroup.com.ph/wp-content/uploads/2018/02/footer-background-image.jpg') no-repeat center;
+}
+.footert ul{
+    padding-left: 0;
+}
+.footer{
+    display: flex;
+    flex-direction: row;
+    color: #bcb4b4;
+    padding:25px 120px 15px;
+    justify-content: space-between;
+}
+.footn,.heading_footer{
+    color: #fff;
+}
+.heading_footer{
+    margin-bottom: 15px;
+    font-size:27px;
+    position: relative;
+}
+.lilist{
+    list-style: none;
+    margin-bottom: 7px;
+    transition: 0.65s transform;
+}
+.lilist a{
+    color:#808080;
+    cursor: pointer;
+    text-decoration: none;
+    transition: .5s color;
+}
+.lilist:hover{
+    transform: translateX(8px);
+    /* color:#fff; */
+}
+.lilist:hover > a{
+    color:#fff;
+    
+}
+.footp{
+    color:#808080;
+    margin-top: 12px;
+    font-size: 20px;
+}
+.footer_about{
+    padding:25px 120px 10px;
+    display: flex;
+}
+.logof{
+    height:77px;
+    width: 80px;
+}
+.footn{
+    margin-left:15px;
+    display: flex;
+    align-items: center;
+}
+
+  .footicons{
+    margin-right: 6px;
+  }
+@media only screen and (max-width:568px){
+    .footert {
+        background: url('https://mftgroup.com.ph/wp-content/uploads/2018/02/footer-background-image.jpg') no-repeat center;
+        background-size: cover;
+        /* Add any other styles you need */
+    }
+    
+    .footer{
+        flex-direction: column;
+        padding:40px 30px 50px;
+        gap:20px
+    }
+    .footer_about{
+        padding:40px 0px 0px 10px;
+        font-size: 12px;
+    }
+    .heading_footer{
+        font-size: 26px;
+        font-weight: 500;
+    }
+
+}
+@media only screen and (min-width:568px) and (max-width:1000px){
+    .footer_about{
+        padding:40px 0px 0px 30px;
+        /* font-size: 12px; */
+    }
+    .footer{
+        padding:40px 40px 50px;
+    }
+}

@@ -1,0 +1,174 @@
+.homecomp4 {
+  background: linear-gradient(
+    to right,
+    #FDFBF7 65%,
+    #E8EEF7 65%
+  );
+  padding-top: 55px;
+  padding-bottom: 55px;
+}
+
+.query-form-container {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.query-form {
+  width: 50%;
+}
+
+.map-container {
+  width: 50%;
+}
+
+.query-input-container {
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+}
+
+.query-input input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-bottom: 1px solid #000;
+  transition:
+    border-color ease-in-out 0.15s,
+    box-shadow ease-in-out 0.15s;
+  outline: none;
+  background-color: transparent;
+}
+
+.query-input input:focus {
+  border-bottom: 1px solid #1f4f8f;
+}
+
+.query-input textarea {
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #000;
+  outline: none;
+  transition:
+    border-color ease-in-out 0.15s,
+    box-shadow ease-in-out 0.15s;
+  background-color: transparent;
+  resize: vertical;
+}
+
+.query-input textarea:focus {
+  border-bottom: 1px solid #1f4f8f;
+}
+
+.query-btn input {
+  color: #000;
+  background-color: transparent;
+  outline: none;
+  border: 1px solid #000;
+  padding: 12px 25px;
+  font-size: 20px;
+  font-weight: 450;
+  cursor: pointer;
+  transition:
+    background-color ease-in-out 0.35s,
+    color ease-in-out 0.35s;
+}
+
+.query-btn input:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.mapouter {
+  text-align: right;
+  height: 100%;
+  width: 100%;
+}
+
+.gmap_canvas {
+  overflow: hidden;
+  background: none !important;
+  height: 100%;
+  width: 100%;
+}
+
+iframe {
+  border: 0;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+
+.map-container {
+  background-color: #333;
+}
+
+@media screen and (max-width: 1286px) {
+  .query-form-container {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .query-form-container {
+    margin-bottom: 35px;
+  }
+}
+
+@media screen and (max-width: 986px) {
+  .query-form-container {
+    width: 86%;
+    flex-direction: column;
+    padding-top: 15px;
+  }
+
+  .homecomp4 {
+    background: #FDFBF7;
+    padding-bottom: 0;
+  }
+
+  .query-form {
+    width: 100%;
+  }
+
+  .map-container {
+    width: 100%;
+  }
+
+  .gmap_canvas {
+    height: 300px;
+  }
+}
+
+@media screen and (max-width: 586px) {
+  .query-input-container {
+    gap: 25px;
+  }
+
+  .query-form-container {
+    width: 90%;
+    margin-bottom: 0;
+  }
+
+  .query-input-container {
+    margin-top: 16px;
+  }
+
+  .homecomp4 {
+    padding-top: 0;
+  }
+
+  .query-btn input {
+    color: #fff;
+    background-color: #000;
+    padding: 10px 25px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: 350;
+    cursor: pointer;
+  }
+}

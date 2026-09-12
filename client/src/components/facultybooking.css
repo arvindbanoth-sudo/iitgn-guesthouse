@@ -1,0 +1,94 @@
+@media only screen and (max-width:1200px){
+    .box1{
+     padding: 50px 100px 0px !important;
+    }
+    .box2{
+     padding: 0px 100px 50px !important;
+    }
+ }
+ @media only screen and (max-width:1000px){
+     .box1{
+      padding: 50px 50px 0px !important;
+     }
+     .box2{
+      padding: 0px 50px 50px !important;
+     }
+  }
+  @media only screen and (max-width:900px){
+     .box1{
+      padding: 50px 50px 0px !important;
+      top:65px;
+     }
+     .box2{
+      padding: 0px 50px 50px !important;
+     }
+     .contcont{
+         padding:40px 40px 30px !important
+     }
+  }
+  @media only screen and (max-width:680px){
+     .cont1{
+         padding:20px 35px !important
+     }
+     .cont2{
+         padding:34px 35px 42px !important
+     }
+  }
+  @media only screen and (max-width:600px){
+     .contcont{
+         padding:40px 25px 30px !important
+     }
+     .cont2{
+         padding:24px 35px 32px !important
+     }
+     .box1{
+         padding: 50px 20px 0px !important;
+         top:50px
+        }
+        .box2{
+         padding: 0px 20px 0px !important;
+        }
+  }
+  @media only screen and (max-width:475px){
+     .contcont{
+         padding:40px 15px 30px !important
+     }
+     .cont1{
+         padding:20px 15px !important
+     }
+     .cont2{
+         padding:24px 15px 32px !important
+     }
+     .hedstails{
+         flex-wrap: wrap;
+     }
+     .botstails{
+         flex-wrap: wrap;
+     }
+  }
+  @media only screen and (max-width:422px){
+     .facid{
+         font-size: 15px !important;
+         color: #000;
+     }
+      
+     .box1{
+         padding: 30px 5px 0px !important;
+        }
+        .box2{
+         padding: 0px 5px 0px !important;
+        }
+  }
+  .css-1wnsr1i{
+     padding: 0 !important;
+     border: none !important;
+     width:550px !important;
+  
+  }
+  .facbookdet{
+     padding: 10px;
+     line-height:1.3;
+  }
+  .css-11lq3yg-MuiGrid-root {
+     margin-top:"20px";
+  }

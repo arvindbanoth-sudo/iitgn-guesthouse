@@ -1,0 +1,122 @@
+.c{
+    background-color: #3c373e;
+    min-height: 100vh;
+    height: 100%;
+}
+.main_contain{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding-top:100px
+}
+.contain_head{
+    font-size: 30px;
+    padding:10px 0 40px 0;
+    color: #bcb4b4;
+    font-weight: bold;
+}
+.contain{
+    width:74%;
+    overflow-x: auto;
+}
+.contains{
+    color:#777;margin-top:60px;font-size:30px
+}
+table{
+    width: 100%;
+}
+th,td{
+    padding:35px 0;
+}
+tr:first-child{
+    color: #fff;
+}
+tr{
+    color: #777;
+    text-align: center;
+    transition: .5s color;
+}
+tr:nth-child(even) {
+    background-color:rgba(0, 0, 0, 0.05);
+  }
+tr:hover{
+    color: #fff;
+}
+tr:hover .hov{
+    color:#ffc107
+}
+.projectssearchbar{
+    float: right;
+    width:32%; 
+    margin-bottom: 20px;
+    background-color: #bcb4b4;
+    border-radius: 6px;
+}
+.projectssearchbar form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.searchbar{
+    outline: none;
+    border:none ;
+    background-color: #bcb4b4;
+    width: 100%;
+    font-size: 20px;
+    padding:10px ;
+    color: #1e1e1e;
+    border-radius: 6px;
+}
+.searchbar:focus{
+    outline: none;
+    border: none;
+}
+.searchbaricon{
+    background-color: #bcb4b4;
+    color: #808080;
+    margin-right: 15px;
+}
+
+@media only screen and (max-width:1200px){
+    .contain{
+        width:80%;
+    }
+}
+@media only screen and (max-width:1000px){
+
+    .contain{
+        width:89%;
+    }
+}
+@media only screen and (max-width:800px){
+    .projectssearchbar{
+        width: 80%;
+    }
+    .contain{
+        width:98%;
+    }
+}
+@media only screen and (max-width:700px){
+    .contains{
+        font-size: 27px;
+    }
+    .contain{
+        width:80%;
+    }
+    table{
+        width: 820px;
+    }
+}
+@media only screen and (max-width:400px){
+    .contains{
+        margin-top: 30px;
+        font-size: 23px;
+    }
+    .contain_head{
+        font-size: 27px;
+        padding:10px 0 40px 0;
+        color: #bcb4b4;
+        font-weight: bold;
+    }}

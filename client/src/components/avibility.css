@@ -1,0 +1,91 @@
+.container_book{
+    width: 86%;
+    margin: auto;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap:40px;
+    margin-bottom:0px;
+}
+.avaibility{
+    font-size: 25px;
+}
+.date_submit_button{
+    background-color: #025464;
+    color: #fff;
+    /* border-radius: 8px; */
+    font-size: 18px;
+    outline: none;
+    border: 1px solid transparent;
+    width: 120px;
+    cursor: pointer;
+    transition: 0.2s all ease-in;
+}
+.date_submit_button:hover{
+   background-color: transparent;
+   color: #000;
+   border-color: #000;
+}
+.form_available{
+    display: flex;
+    flex-direction: row;
+    gap:30px
+}
+.ant-picker-input{
+    border:1px solid #1e1e1e;
+    padding:15px;
+    border-radius:8px;
+}
+.ant-picker{
+   box-shadow: none;
+   position: static;
+}
+.ant-picker-active-bar{
+    display: none;
+}
+.ant{
+    width: 100%;
+}
+@media only screen and (max-width:648px){
+    .ant div{
+        display: flex;
+        flex-direction: row;
+        gap:30px
+    }
+    .ant-picker{
+        width: 100%;
+        border: none;
+    }
+    .container_book{
+        gap:20px
+    }
+    .form_available{
+        flex-direction:column;
+        gap:30px
+    }
+    .date_submit_button{
+        width: 100%;
+        margin: auto;
+        height: 40px;
+    }
+}
+@media only screen and (max-width:470px){
+      .ant div{
+        gap:15px
+      }
+}
+@media only screen and (max-width:400px){
+    .container_book{
+        gap:0px;
+    }
+    .ant-picker-suffix,.anticon{
+        display: none;
+    }
+    .ant-picker-input,.ant-picker{
+        height:50px;
+    }
+    .ant div{
+        flex-direction: column;
+        gap:15px
+    }
+}

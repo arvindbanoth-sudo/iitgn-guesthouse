@@ -1,0 +1,113 @@
+.searchresultcont{
+    width: 80%;
+    margin: auto;
+}
+.avaibile{
+    padding: 50px 50px 8px 50px;
+    font-size: 22px;
+    color: #000;
+    font-weight: 550;
+}
+.searchresultsinfo{
+    display: flex;
+    justify-content: space-between;
+    padding:8px 50px 50px 50px
+}
+.searchresultsinfo p{
+    color: #1e1e1e;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.searchresultsinfo button{
+    background: linear-gradient(to right, #000 50%, #025464 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all .4s ease-out;
+    color: #fff;
+    /* border-radius: 8px; */
+    font-size: 18px;
+    outline: none;
+    border: none;
+    width: 170px;
+    height: 40px;
+    cursor: pointer;
+}
+.searchresultsinfo button:hover{
+    background-position: left bottom;
+    /* border: 2.2px solid #000; */
+  }
+.searchresultsdesc{
+    width: 67%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap:20px
+}
+.types{
+    color: #1e1e1e;
+    font-size: 16px;
+}
+.choosetype{
+    color: #000;
+    font-size: 21px;
+}
+.roomcardsdiv{
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+    margin-bottom: 0px;
+}
+@media only screen and (max-width:1300px){
+    .searchresultsdesc{
+        width: 73%;
+    }
+}
+@media only screen and (max-width:992px){
+    .searchresultcont{
+        width: 83%;
+    }
+    .searchresultsdesc{
+        width: 80%;
+    }
+}
+@media only screen and (max-width:768px){
+    .searchresultcont{
+        width: 87%;
+    }
+    .searchresultsdesc{
+        width: 90%;
+    }
+    .searchresultsinfo{
+        padding:8px 30px 30px 30px
+    }
+    .avaibile{
+        padding: 30px 30px 8px 30px;
+    }
+}
+@media only screen and (max-width:648px){
+    .searchresultcont{
+        width: 90%;
+    }
+    .searchresultsdesc{
+        width: 100%;
+    }
+    .searchresultsinfo{
+        padding:3px 0px 30px 0px
+    }
+    .avaibile{
+        padding: 30px 0px 3px 0px;
+    }
+
+}
+@media only screen and (max-width:586px){
+    .searchresultsinfo{
+        display: flex;
+        flex-direction: column;
+        gap:8px
+    }
+    .searchresultsinfo p{
+        justify-content: start;
+    }
+}

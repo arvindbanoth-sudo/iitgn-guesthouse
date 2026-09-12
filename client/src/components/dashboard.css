@@ -1,0 +1,42 @@
+.dashboard{
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1; top: 0;
+    left: 0;
+    background-color:#4C5A65; 
+    overflow-x: hidden;
+    padding-top: 20px; 
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    gap:20px
+}
+.dashboard a{
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #808080;
+    display: block;
+}
+.dashboard a:hover{
+    color: #fff;
+}
+.sidenav_bar_all_res{
+    display: none;
+    position: absolute;
+    color: #000;
+    font-size: 30px;
+    top:20px;
+    left: 45px;
+    cursor: pointer;
+  }
+  @media only screen and (max-width:1015px){
+    
+      .sidenav_bar_all_res{
+          display: block;
+      }
+      .hider{
+          transform: translate(-120%);
+      }
+  }

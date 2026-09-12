@@ -1,0 +1,843 @@
+const bcrypt = require('bcrypt');
+const express = require('express');
+const router = express.Router();
+const jwt = require('jsonwebtoken');
+
+const usersmodel = require('../pages/usersmodel');
+const adminsmodel = require('../pages/adminmodel');
+const facultymodel = require('../pages/facultymodel');
+const otpmodel = require('../pages/otpmodel');
+const middleware = require('../middleware');
+
+const otpGenerator = require('otp-generator');
+const nodemailer = require('nodemailer');
+
+require('dotenv').config();
+
+/*
+|--------------------------------------------------------------------------
+| Email Transporter
+|----------------------------------------------------------------------| Email credentials are stored in server/.env
+|--------------------------------------------------------------------------
+*/
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+   
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| IIT Gandhinagar Email Validation
+|--------------------------------------------------------------------------
+*/
+
+const isIITGNEmail = (email) => {
+    if (!email || typeof email !== 'string') {
+        return false;
+    }
+
+    const parts = email.toLowerCase().trim().split('@');
+
+    if (parts.length !== 2) {
+        return false;
+    }
+
+    return parts[1] === 'iitgn.ac.in';
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| Test Route
+|--------------------------------------------------------------------------
+*/
+
+router.get('/test', (req, res) => {
+    res.send('User route testing!');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| STUDENT REGISTRATION
+|--------------------------------------------------------------------------
+| 1. Check username
+| 2. Check IITGN email
+| 3. Check password
+| 4. Generate OTP
+| 5. Store hashed OTP
+| 6. Send OTP to IITGN email
+|--------------------------------------------------------------------------
+*/
+
+router.post('/register', async (req, res) => {
+
+    try {
+
+        const {
+            username,
+            email,
+            password,
+            confirmpassword
+        } = req.body;
+
+        // Basic validation
+        if (!username || !email || !password || !confirmpassword) {
+            return res.status(400).json({
+                message: 'Please fill all fields'
+            });
+        }
+
+        // Check IITGN email
+        if (!isIITGNEmail(email)) {
+            return res.status(400).json({
+                message: 'Please use your IIT Gandhinagar email address (@iitgn.ac.in)'
+            });
+        }
+
+        // Check password match
+        if (password !== confirmpassword) {
+            return res.status(400).json({
+                message: "Passwords don't match"
+            });
+        }
+
+        // Check existing username
+        const user = await usersmodel.findOne({ username });
+
+        // Check username waiting for OTP verification
+        const useronverification = await otpmodel.findOne({ username });
+
+        if (user || useronverification) {
+            return res.status(400).json({
+                message: 'Username already exists'
+            });
+        }
+
+        // Check existing email
+        const userwithemail = await usersmodel.findOne({ email });
+
+        // Check email waiting for OTP verification
+        const useronverificationwithemail =
+            await otpmodel.findOne({ email });
+
+        if (userwithemail || useronverificationwithemail) {
+            return res.status(400).json({
+                message: 'Email already exists'
+            });
+        }
+
+        /*
+        Generate 6 digit OTP
+        */
+        const otp = otpGenerator.generate(6, {
+            digits: true,
+            lowerCaseAlphabets: false,
+            upperCaseAlphabets: false,
+            specialChars: false
+        });
+
+        /*
+        Hash OTP before storing it
+        */
+        const hashedotp = await bcrypt.hash(otp, 10);
+
+        const newotp = new otpmodel({
+            username,
+            role: 'student',
+            email: email.toLowerCase().trim(),
+            otp: hashedotp
+        });
+
+        await newotp.save();
+
+        /*
+        Email containing OTP
+        */
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'IIT Gandhinagar Guest House - Email Verification',
+            html: `
+                <div style="font-family: Arial, sans-serif;">
+                    <h2>IIT Gandhinagar Guest House</h2>
+
+                    <p>
+                        Hello <strong>${username}</strong>,
+                    </p>
+
+                    <p>
+                        Your OTP for creating your account is:
+                    </p>
+
+                    <h1 style="letter-spacing: 5px;">
+                        ${otp}
+                    </h1>
+
+                    <p>
+                        Please enter this OTP on the registration page
+                        to verify your email address.
+                    </p>
+
+                    <p>
+                        If you did not request this registration,
+                        you can safely ignore this email.
+                    </p>
+                </div>
+            `
+        };
+
+        /*
+        Send email
+        */
+        transporter.sendMail(mailOptions, (error, info) => {
+
+            if (error) {
+                console.error('Email sending error:', error);
+
+                return res.status(500).json({
+                    message: 'Failed to send OTP email'
+                });
+            }
+
+            console.log(
+                'Registration OTP sent:',
+                info.messageId
+            );
+
+            return res.status(200).json({
+                message: 'OTP sent successfully'
+            });
+        });
+
+    } catch (err) {
+
+        console.error('Registration error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| CLEAR OTP
+|--------------------------------------------------------------------------
+| Used when the user presses "Go Back" from the OTP screen.
+|--------------------------------------------------------------------------
+*/
+
+router.put('/clearotp', async (req, res) => {
+
+    try {
+
+        const { username, email } = req.body;
+
+        const user = await otpmodel.findOne({
+            email: email.toLowerCase().trim()
+        });
+
+        if (user) {
+            await otpmodel.findByIdAndDelete(user._id);
+        }
+
+        return res.status(200).json({
+            message: 'OTP cleared'
+        });
+
+    } catch (err) {
+
+        console.error('Clear OTP error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| RESEND OTP
+|--------------------------------------------------------------------------
+*/
+
+router.post('/resendotp', async (req, res) => {
+
+    try {
+
+        const { username, email } = req.body;
+
+        if (!username || !email) {
+            return res.status(400).json({
+                message: 'Username and email are required'
+            });
+        }
+
+        if (!isIITGNEmail(email)) {
+            return res.status(400).json({
+                message: 'Please use your IIT Gandhinagar email address'
+            });
+        }
+
+        /*
+        Remove previous OTP
+        */
+        const oldOtp = await otpmodel.findOne({
+            email: email.toLowerCase().trim()
+        });
+
+        if (oldOtp) {
+            await otpmodel.findByIdAndDelete(oldOtp._id);
+        }
+
+        /*
+        Generate new OTP
+        */
+        const otp = otpGenerator.generate(6, {
+            digits: true,
+            lowerCaseAlphabets: false,
+            upperCaseAlphabets: false,
+            specialChars: false
+        });
+
+        /*
+        Hash OTP
+        */
+        const hashedotp = await bcrypt.hash(otp, 10);
+
+        const newotp = new otpmodel({
+            username,
+            role: 'student',
+            email: email.toLowerCase().trim(),
+            otp: hashedotp
+        });
+
+        await newotp.save();
+
+        /*
+        Send new OTP
+        */
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'IIT Gandhinagar Guest House - New OTP',
+            html: `
+                <div style="font-family: Arial, sans-serif;">
+                    <h2>IIT Gandhinagar Guest House</h2>
+
+                    <p>
+                        Your new verification OTP is:
+                    </p>
+
+                    <h1 style="letter-spacing: 5px;">
+                        ${otp}
+                    </h1>
+
+                    <p>
+                        Please enter this OTP on the registration page.
+                    </p>
+                </div>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+
+            if (error) {
+                console.error('OTP resend error:', error);
+
+                return res.status(500).json({
+                    message: 'Failed to resend OTP'
+                });
+            }
+
+            console.log(
+                'New OTP sent:',
+                info.messageId
+            );
+
+            return res.status(200).json({
+                message: 'OTP resent successfully'
+            });
+        });
+
+    } catch (err) {
+
+        console.error('Resend OTP error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| VERIFY STUDENT OTP
+|--------------------------------------------------------------------------
+*/
+
+router.post('/verifyotp', async (req, res) => {
+
+    try {
+
+        const {
+            username,
+            password,
+            email,
+            otp
+        } = req.body;
+
+        if (!username || !password || !email || !otp) {
+            return res.status(400).json({
+                message: 'Missing required information'
+            });
+        }
+
+        /*
+        Find OTP
+        */
+        const user = await otpmodel.findOne({
+            email: email.toLowerCase().trim()
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                message: 'Sorry, OTP expired or was not found'
+            });
+        }
+
+        /*
+        Compare entered OTP with hashed OTP
+        */
+        const isotpvalid = await bcrypt.compare(
+            otp,
+            user.otp
+        );
+
+        if (!isotpvalid) {
+            return res.status(400).json({
+                message: 'Wrong OTP'
+            });
+        }
+
+        /*
+        Hash student password
+        */
+        const hashedpassword = await bcrypt.hash(
+            password,
+            10
+        );
+
+        /*
+        Create student account
+        */
+        const newuser = new usersmodel({
+            username,
+            email: email.toLowerCase().trim(),
+            password: hashedpassword
+        });
+
+        await newuser.save();
+
+        /*
+        Delete OTP after successful verification
+        */
+        await otpmodel.findByIdAndDelete(user._id);
+
+        return res.status(200).json({
+            message: 'Student account created successfully'
+        });
+
+    } catch (err) {
+
+        console.error('OTP verification error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| STUDENT LOGIN
+|--------------------------------------------------------------------------
+*/
+
+router.post('/login', async (req, res) => {
+
+    try {
+
+        const {
+            username,
+            password
+        } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({
+                message: 'Username and password are required'
+            });
+        }
+
+        const user = await usersmodel.findOne({
+            username
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                message: 'No existing student found'
+            });
+        }
+
+        const ispasswordvalid = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!ispasswordvalid) {
+            return res.status(400).json({
+                message: 'Username or password is incorrect'
+            });
+        }
+
+        /*
+        Generate JWT
+        */
+        const token = jwt.sign(
+            {
+                id: user._id,
+                role: 'student'
+            },
+            process.env.SECRET_KEY,
+            {
+                expiresIn: '10h'
+            }
+        );
+
+        return res.status(200).json({
+            token
+        });
+
+    } catch (err) {
+
+        console.error('Student login error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN LOGIN
+|--------------------------------------------------------------------------
+*/
+
+router.post('/adminlogin', async (req, res) => {
+
+    try {
+
+        const {
+            username,
+            password
+        } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({
+                message: 'Username and password are required'
+            });
+        }
+
+        const user = await adminsmodel.findOne({
+            username
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                message: 'No existing admin found'
+            });
+        }
+
+        const ispasswordvalid = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!ispasswordvalid) {
+            return res.status(400).json({
+                message: 'Password is incorrect'
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user._id,
+                role: 'admin'
+            },
+            process.env.SECRET_KEY,
+            {
+                expiresIn: '10h'
+            }
+        );
+
+        return res.status(200).json({
+            token
+        });
+
+    } catch (err) {
+
+        console.error('Admin login error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| CREATE NEW ADMIN
+|--------------------------------------------------------------------------
+*/
+
+router.post('/newadmin', middleware, async (req, res) => {
+
+    try {
+
+        const exist = await adminsmodel.findById(req.userid);
+
+        if (!exist) {
+            return res.status(400).json({
+                message: 'Admin not found'
+            });
+        }
+
+        const {
+            username,
+            password
+        } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({
+                message: 'Username and password are required'
+            });
+        }
+
+        const user = await adminsmodel.findOne({
+            username
+        });
+
+        if (user) {
+            return res.status(400).json({
+                message: 'Admin already exists'
+            });
+        }
+
+        const hashedpassword = await bcrypt.hash(
+            password,
+            10
+        );
+
+        const newadmin = new adminsmodel({
+            username,
+            password: hashedpassword
+        });
+
+        await newadmin.save();
+
+        return res.status(200).json({
+            message: 'Admin added successfully'
+        });
+
+    } catch (err) {
+
+        console.error('New admin error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| FACULTY REGISTRATION
+|--------------------------------------------------------------------------
+| Faculty accounts are created directly without OTP in the
+| original project, so that behavior is preserved.
+|--------------------------------------------------------------------------
+*/
+
+router.post('/facultyregister', async (req, res) => {
+
+    try {
+
+        const {
+            username,
+            email,
+            password,
+            confirmpassword
+        } = req.body;
+
+        if (!username || !email || !password || !confirmpassword) {
+            return res.status(400).json({
+                message: 'Please fill all fields'
+            });
+        }
+
+        /*
+        IITGN email check
+        */
+        if (!isIITGNEmail(email)) {
+            return res.status(400).json({
+                message: 'Please use your IIT Gandhinagar email address (@iitgn.ac.in)'
+            });
+        }
+
+        /*
+        Password check
+        */
+        if (password !== confirmpassword) {
+            return res.status(400).json({
+                message: "Passwords don't match"
+            });
+        }
+
+        /*
+        Check username
+        */
+        const faculty = await facultymodel.findOne({
+            username
+        });
+
+        const facultyverification = await otpmodel.findOne({
+            username
+        });
+
+        if (faculty || facultyverification) {
+            return res.status(400).json({
+                message: 'Username already exists'
+            });
+        }
+
+        /*
+        Check email
+        */
+        const facultywithemail = await facultymodel.findOne({
+            email: email.toLowerCase().trim()
+        });
+
+        const facultyonverificationwithemail =
+            await otpmodel.findOne({
+                email: email.toLowerCase().trim()
+            });
+
+        if (
+            facultywithemail ||
+            facultyonverificationwithemail
+        ) {
+            return res.status(400).json({
+                message: 'Email already exists'
+            });
+        }
+
+        /*
+        Hash faculty password
+        */
+        const hashedPassword = await bcrypt.hash(
+            password,
+            10
+        );
+
+        /*
+        Create faculty account
+        */
+        const newFaculty = new facultymodel({
+            username,
+            email: email.toLowerCase().trim(),
+            password: hashedPassword
+        });
+
+        await newFaculty.save();
+
+        return res.status(200).json({
+            message: 'Faculty account created successfully'
+        });
+
+    } catch (err) {
+
+        console.error('Faculty registration error:', err);
+
+        return res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| FACULTY LOGIN
+|--------------------------------------------------------------------------
+*/
+
+router.post('/facultylogin', async (req, res) => {
+
+    try {
+
+        const {
+            username,
+            password
+        } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({
+                message: 'Username and password are required'
+            });
+        }
+
+        const user = await facultymodel.findOne({
+            username
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                message: 'Faculty user not found'
+            });
+        }
+
+        const ispasswordvalid = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!ispasswordvalid) {
+            return res.status(400).json({
+                message: 'Password is incorrect'
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user._id,
+                role: 'faculty'
+            },
+            process.env.SECRET_KEY,
+            {
+                expiresIn: '10h'
+            }
+    

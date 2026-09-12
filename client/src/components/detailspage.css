@@ -1,0 +1,79 @@
+.acbtn{
+    background-color:#000;
+    color: #fff;
+    /* border-radius: 8px; */
+    font-size: 18px;
+    outline: none;
+    border: none;
+    /* width: 240px; */
+    padding: 10px 20px;
+    /* height: 40px; */
+    cursor: pointer;
+    margin-bottom: 30px;
+    transition: 0.2s all ease-in;
+}
+
+#prev{
+    margin-right: 10px;
+    background-color: transparent;
+    color: #000;
+    border: 1px solid #000;
+}
+#prev:hover{
+    background-color: #000;
+    color: #fff;
+}
+.plan{
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: #000;;
+}
+.radio_btns input{
+    margin:11px 0;
+}
+.adults label,.chrm{
+    font-size: 18px;
+    margin-right: 10px;
+    color: #000;
+}
+.adults{
+    margin-bottom: 25px;
+}
+.adults select{
+    padding:6px 12px;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+#adults{
+    cursor: pointer;
+}
+.selectrooms{
+     margin-bottom: 25px;
+}
+.checkbox{
+    margin-bottom: 5px;
+}
+.checkbox label{
+    margin-left: 5px;
+}
+.loading{
+    display:flex;
+    align-items: center;
+    gap:10px
+}
+.loader {
+    margin:0;
+    /* border: 13px dotted #EAF0F6; */
+    border-radius: 50%;
+    border-top: 3px dotted #1e1e1e;
+    border-left: 3px dotted #1e1e1e;
+    width: 20px;
+    height: 20px;
+    animation: spinner 1.9s linear infinite;
+  }
+  
+  @keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

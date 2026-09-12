@@ -1,0 +1,402 @@
+/* =====================================================
+   COMMON FORM INPUTS
+===================================================== */
+
+.input_res {
+  outline: none;
+  border: none;
+}
+
+
+/* =====================================================
+   LOGIN / REGISTRATION PAGE WRAPPER
+===================================================== */
+
+.login-page-wrapper,
+.registration-page-wrapper {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   MAIN FORM CONTAINER
+===================================================== */
+
+.container {
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 32px
+    rgba(0, 0, 0, 0.18);
+
+  border: 1px solid
+    rgba(63, 67, 80, 0.08);
+
+  border-radius: 12px;
+
+  width: 540px;
+
+  max-width: 100%;
+
+  padding: 48px 56px;
+
+  box-sizing: border-box;
+}
+
+
+/* =====================================================
+   LOGIN / SIGNUP FORM
+===================================================== */
+
+.signin-form,
+.signup-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+
+.login-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 22px;
+}
+
+
+.register-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  width: 100%;
+}
+
+
+/* =====================================================
+   FORM TITLE
+===================================================== */
+
+.form-title {
+  color: #3f4350;
+
+  font-size: 22px;
+
+  font-weight: 600;
+
+  line-height: 1.35;
+
+  margin: 0;
+
+  text-align: left;
+}
+
+
+.reg-title {
+  text-align: center;
+
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   MATERIAL UI TEXT FIELDS
+===================================================== */
+
+.input_res {
+  width: 100%;
+}
+
+
+/* Outlined input height */
+
+.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+  min-height: 45px !important;
+}
+
+
+/* Input label */
+
+.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
+  line-height: normal !important;
+}
+
+
+/* =====================================================
+   SUBMIT BUTTON
+===================================================== */
+
+.form-submit {
+  display: inline-block;
+
+  background: #1c58d9;
+
+  color: #ffffff;
+
+  border: none;
+
+  width: 100%;
+
+  padding: 15px 39px;
+
+  border-radius: 5px;
+
+  margin-top: 10px;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  font-weight: 500;
+
+  transition:
+    background-color 0.25s ease,
+    transform 0.15s ease;
+}
+
+
+.form-submit:hover {
+  background: #386fe5;
+}
+
+
+.form-submit:active {
+  transform: scale(0.99);
+}
+
+
+.reg {
+  background: #1c58d9;
+}
+
+
+.reg:hover {
+  background: #386fe5;
+}
+
+
+/* =====================================================
+   LINKS
+===================================================== */
+
+.signup-link,
+.signin-link {
+  font-size: 16px;
+
+  color: #386fe5;
+
+  margin-left: 5px;
+
+  text-decoration: none;
+}
+
+
+.signup-link:hover,
+.signin-link:hover {
+  text-decoration: underline;
+}
+
+
+.forgotpassword {
+  font-size: 15px;
+
+  color: #1c58d9;
+
+  text-decoration: none;
+}
+
+
+.forgotpassword:hover {
+  text-decoration: underline;
+}
+
+
+/* =====================================================
+   TERMS
+===================================================== */
+
+.term-service {
+  font-size: 13px;
+
+  color: #222;
+}
+
+
+/* =====================================================
+   ICONS
+===================================================== */
+
+.material-icons-name {
+  font-size: 15px;
+}
+
+
+/* =====================================================
+   OTP VERIFICATION
+===================================================== */
+
+.MuiOtpInput-TextField {
+  width: 40px;
+
+  height: 40px;
+}
+
+
+.MuiInput-underline:before {
+  border: none;
+}
+
+
+.MuiInput-underline:after {
+  border-bottom: none;
+}
+
+
+/* =====================================================
+   LOGIN PAGE BACKGROUND
+===================================================== */
+
+.login-page-wrapper,
+.registration-page-wrapper {
+  background-color: #f5f5f5;
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media screen and (max-width: 768px) {
+
+  .container {
+    width: calc(100% - 40px);
+
+    padding: 40px 35px;
+  }
+
+
+  .form-button {
+    text-align: center;
+  }
+
+
+  .social-login {
+    justify-content: center;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media screen and (max-width: 490px) {
+
+  .container {
+    width: calc(100% - 24px);
+
+    padding: 35px 24px;
+
+    border-radius: 10px;
+  }
+
+
+  .css-tccdxk {
+    gap: 10px !important;
+  }
+
+
+  .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 1px !important;
+  }
+
+
+  .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+    padding: 0;
+  }
+
+
+  .form-title {
+    font-size: 20px;
+  }
+
+
+  .reg-title {
+    font-size: 18px !important;
+
+    text-align: center !important;
+
+    font-weight: bold !important;
+  }
+
+}
+
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media screen and (max-width: 400px) {
+
+  .container {
+    padding: 30px 20px;
+  }
+
+
+  .logintype {
+    margin: 12px auto;
+  }
+
+
+  .logintypes {
+    border: 1px solid #f4f4f4;
+  }
+
+
+  .social-login {
+    flex-direction: column;
+  }
+
+
+  .social-label {
+    margin-right: 0;
+
+    margin-bottom: 10px;
+  }
+
+}
+
+
+/* =====================================================
+   OTP ON VERY SMALL SCREENS
+===================================================== */
+
+@media screen and (max-width: 380px) {
+
+  .MuiOtpInput-TextField {
+    width: 37px !important;
+  }
+
+
+  .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+    border-top: none !important;
+
+    border-right: 0;
+
+    border-left: 0;
+  }
+
+}

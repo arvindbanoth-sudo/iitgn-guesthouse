@@ -1,0 +1,50 @@
+@media only screen and (max-width:930px){
+  .page2{
+    gap:30px !important;
+    justify-content: center !important;
+  }
+}
+@media only screen and (max-width:600px){
+    .mainbox{
+        padding: 50px 20px !important;
+    }
+   
+  }
+  
+  @media only screen and (max-width:400px){
+  .textfeild{
+    width: 270px !important;
+}
+.page2{
+    padding:30px 0px 10px !important;
+}
+ .mainbox{
+    padding: 50px 10px !important;
+}  
+  .page2{
+    gap:20px !important;
+    
+  }
+  .page1{
+    flex-direction: column !important;
+    gap:10px !important;
+  }
+  .css-4jnixx-MuiStack-root{
+    overflow: hidden !important;
+  }
+}
+@media only screen and (max-width:330px){
+    .css-1hv8oq8-MuiStepLabel-label.Mui-active{
+        text-align: center !important;
+    }
+    .css-ascpo7-MuiStepLabel-root{
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+    .css-1hv8oq8-MuiStepLabel-label.Mui-completed{
+        text-align: center !important;
+    }
+    .css-1hv8oq8-MuiStepLabel-label {
+        text-align: center !important;
+    }
+}

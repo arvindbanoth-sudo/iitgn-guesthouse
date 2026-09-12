@@ -1,0 +1,43 @@
+.animatedtext{
+    animation: texthead 3s ;
+    animation-fill-mode: forwards;
+}
+.ss-q4sqf-MuiFormControl-root{
+    margin: 0;
+}
+@keyframes texthead {
+    from {opacity: 0;transform: translateY(30px)}
+    to {opacity: 1;transform: translateY(0px)}
+}
+
+@media only screen and (max-width:584px){
+   .animatedtext{
+    font-size: 40px !important;
+   }
+   .animatedtext2{
+    font-size: 30px !important;
+   }
+   .logintype{
+    flex-direction: column !important;
+    gap:15px !important;
+    justify-content: center;
+   }
+   .logintype-container{
+    margin: auto !important;
+    text-align: center;
+
+    width: 90% !important;
+
+   }
+   .logintype-button{
+    width: 90% !important;
+    background-color: #1c58d9 !important;
+    border: none !important;
+   }
+   .css-13i4rnv-MuiGrid-root{
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+}

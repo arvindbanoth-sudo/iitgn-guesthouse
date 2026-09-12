@@ -1,0 +1,216 @@
+
+.admincontainer {
+    /* min-height: 100vh; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 120px 38px 38px;
+}
+    
+.adminmain-container {
+    width: 80%;
+    height: 100%;
+    border: 1px solid white;
+    background-color: #fff;
+    box-shadow: rgba(50, 71, 92, 0.06) 0px 2px 9px -2px, rgba(50, 71, 92, 0.04) 0px 4px 9px 1px, rgba(50, 71, 92, 0.02) 0px 2px 6px 4px;
+    border-radius: 10px;
+    /* margin-bottom: 15px; */
+}
+
+.adminbookingform{
+    width: 80%;
+    margin: 30px auto 0 auto;
+    display: flex;
+    padding:10px;
+    height:50%;
+    margin-top:70px;
+    flex-direction: column;
+}
+.adminbookingform i {
+    font-size: 8px;
+    color: red;
+}
+.det-1 {
+    font-size: 30px;
+    color: #808080;
+    margin-bottom: 30px;
+}
+.labelname {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.fname {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+    margin: 10px 0;
+}
+.fname label {
+    font-size: 16px;
+    font-family: "Montserrat";
+    padding: 8px;;
+    color: #000;
+    pointer-events: none;
+    margin-bottom: 5px;
+}
+.fname input {
+    /* width: 90%; */
+    height: 30px;
+    padding: 0px 16px 0 10px;
+    outline: 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+.fname input:focus {
+    border: 1.5px solid #696cff;
+}
+
+.lname {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+    margin: 10px 0;
+}
+.lname label {
+    font-size: 16px;
+    font-family: "Montserrat";
+    padding: 8px;
+    color: #000;
+    pointer-events: none;
+    margin-bottom: 5px;
+}
+.lname input {
+    /* width: 90%; */
+    height: 30px;
+    padding: 0px 16px 0 10px;
+    outline: 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+.lname input:focus {
+    border: 1.5px solid #696cff;
+}
+
+.special {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 10px 0;
+}
+.special label {
+    font-size: 16px;
+    font-family: "Montserrat";
+    color: #000;
+    pointer-events: none;
+    margin-bottom: 5px;
+}
+.special textarea {
+    height: 140px;
+    padding: 0px 16px 0 10px;
+    outline: 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-size: 13px;
+    padding-top: 10px;
+}
+.special textarea:focus {
+    border: 1.5px solid #696cff;
+}
+.persons {
+    padding: 10px 0;
+}
+.persons label {
+    font-size: 16px;
+    font-family: "Montserrat";
+    padding: 0;
+    color: #000;
+    pointer-events: none;
+    margin-bottom: 5px;
+}
+select {
+    height: 30px;
+    padding: 0px 16px 0 10px;
+    outline: 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+}
+.rooms {
+    padding: 10px 0 10px 0;
+}
+.spanad {
+    font-size: 18px;
+    font-family: "Montserrat";
+    color: #000;
+    pointer-events: none;
+    margin-bottom:8px;
+}
+.rooms input {
+   margin-bottom: 10px;
+}
+.adminbookingform button {
+    font-size: 15px;
+    color: #FFFFFF;
+    background-color: #696cff;
+    outline: none;
+    border: none;
+    padding: 10px 0px;
+    width: 120px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    cursor:pointer;
+}
+@media only screen and (max-width:1015px){
+    .admincontainer{
+      margin-left: 0;
+      padding-top: 100px}
+      .adminmain-container {
+        width: 85%;
+
+    }
+}
+@media only screen and (max-width:786px){
+    .admincontainer{
+      padding-top:100px}
+      .adminmain-container {
+        width: 100%;
+
+    }
+}
+@media only screen and (max-width:568px){
+    .admincontainer{
+      padding-top:90px}
+      .adminmain-container {
+        width: 100%;
+    }
+    .adminbookingform{
+        width: 88%;
+    margin: 40px auto 0 auto;
+    }
+    .labelname{
+        flex-direction: column;
+    }
+    .labelname div{
+        width: 100%;
+    }
+}
+@media only screen and (max-width:430px){
+    .admincontainer{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

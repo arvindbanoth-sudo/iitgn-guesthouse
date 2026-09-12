@@ -1,0 +1,42 @@
+const filterroom = async (room) => {
+    const detail = await axios.get(`http://localhost:8082/bookings/${room}`);
+    const bookingdetails = detail.data.bookingdetail;
+    const fromdate = bookingdetails.fromdate;
+    const enddate = bookingdetails.enddate;
+    const fromDateObj = new Date(fromdate.split('-').reverse().join('-'));
+    const endDateObj = new Date(enddate.split('-').reverse().join('-'));
+    const savedCheckinObj = new Date(savedCheckin.split('-').reverse().join('-'));
+    const savedCheckoutObj = new Date(savedCheckout.split('-').reverse().join('-'));
+    if (
+      (fromDateObj <= savedCheckoutObj && fromDateObj >= savedCheckinObj) ||
+      (endDateObj >= savedCheckinObj && endDateObj <= savedCheckoutObj)
+    ) {
+      console.log("yes");
+      return true;
+    } else {
+      console.log("no");
+      return false;
+  };
+    const allrooms = await axios.get("http://localhost:8082/rooms/allrooms");
+        const newdeluxerooms = allrooms.data.alldeluxerooms;
+        const newsinglerooms = allrooms.data.allsinglerooms;
+        const newdoublerooms = allrooms.data.alldoublerooms;
+        const singleroomsg = await Promise.all(
+          newsinglerooms.map(async (deluxeroom) => {
+            const newdeluxeroom = await Promise.all(
+              deluxeroom.booking.map(async (room) => {
+                const isValid = await filterroom(room);
+                if (isValid) {
+                  return room;
+                }
+                return null;
+              })
+            ).then((filteredRooms) => filteredRooms.filter(Boolean));
+            
+            console.log(newdeluxeroom);
+            if (newdeluxeroom.length === 0) {
+              console.log(deluxeroom)
+              return deluxeroom;}
+             }
+          )
+        );
