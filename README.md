@@ -1,1 +1,1 @@
-https://institute-guest-house-booking.onrender.com/
+https://exquisite-adaptation-production-cb4f.up.railway.app
